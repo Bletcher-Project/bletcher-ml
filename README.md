@@ -1,4 +1,4 @@
-# bletcher-gan
+# bletcher-ml
 
 ## neural-style의 pytorch버전을 사용하였습니다
 
