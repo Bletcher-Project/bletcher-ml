@@ -56,6 +56,7 @@ import torchvision.transforms as transforms
 import torchvision.models as models
 
 import copy
+nn.Linear()
 
 ######################################################################
 # Next, we need to choose which device to run the network on and import the
