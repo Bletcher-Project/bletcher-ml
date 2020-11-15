@@ -6,6 +6,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from torchvision.utils import save_image
 
+
 port = 8000
 
 class my_handler(BaseHTTPRequestHandler):
@@ -17,9 +18,11 @@ class my_handler(BaseHTTPRequestHandler):
 
 
     def _key_value_parser(self, lists):
+        data = lists.split("&")
+        print(data)
         set_ = {}
 
-        for list in lists:
+        for list in data:
             temp = list.split('=')
             set_[temp[0]] = temp[1]
 
@@ -29,16 +32,18 @@ class my_handler(BaseHTTPRequestHandler):
     #create
     def do_POST(self):
         self._set_header()
+        content_length = int(self.headers['Content-Length'])
+        body = self.rfile.read(content_length).decode('utf-8')
 
-        path = self.path
-        if '?' in self.path:
-            urls = self.path.split('?',2)
-            request = urls[0]
-            kv = urls[1].split('&')
-
-        kv = self._key_value_parser(kv)
-
+        request = self.path.split("192.168.50.67:8000")[0]
+        print("=====================")
+        print(request)
+        print(body)
+        
+        kv = self._key_value_parser(body)
+        print(kv)
         if(request == '/synthesizing'):
+            print("1")
             cnn, cnn_normalization_mean, cnn_normalization_std, style_img, content_img, input_img = ns.set_neural_style(kv['content_image'], kv['style_image'])
             output = ns.run_style_transfer(cnn, cnn_normalization_mean, cnn_normalization_std,
                                 content_img, style_img, input_img)
@@ -53,8 +58,9 @@ class my_handler(BaseHTTPRequestHandler):
             print('\n\n')
 
 def run():
-    httpd = HTTPServer(('localhost', port), my_handler)
+    httpd = HTTPServer(('192.168.50.67', port), my_handler)
     print('Server running on port : {}'.format(port))
     httpd.serve_forever()
 
 run()
+
